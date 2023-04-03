@@ -20,6 +20,7 @@ namespace PioresFilmes.Data
 
         public async Task CreateManyAsync(IEnumerable<Movie> movies)
         {
+            await _dbContext.Database.EnsureCreatedAsync();
             foreach (var movie in movies)
             {
                 foreach (var producer in movie.Producers)

@@ -1,10 +1,11 @@
-﻿using PioresFilmes.Domain;
+﻿using PioresFilmes.Application.Interfaces;
+using PioresFilmes.Domain;
 
 namespace PioresFilmes.Application.Services
 {
-    public static class ReadCsvService
+    public class ReadCsvService : IReadCsvService
     {
-        public static IEnumerable<Movie> ReadMovies(string filePath)
+        public IEnumerable<Movie> ReadMovies(string filePath)
         {
             List<Movie> movies = new List<Movie>();
 
@@ -24,7 +25,7 @@ namespace PioresFilmes.Application.Services
                         Studios = fields[2],
                         Producers = fields[3]
                             .Split(new string[] { " and ", ", " }, StringSplitOptions.None)
-                            .Select(p => new Producer() { Name = p.Trim()}),
+                            .Select(p => new Producer() { Name = p.Trim() }).ToList(),
                         Winner = fields[4] == "yes"
                     };
 

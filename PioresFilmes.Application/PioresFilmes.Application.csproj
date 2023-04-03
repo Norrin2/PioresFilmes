@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PioresFilmes.Domain\PioresFilmes.Domain.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
+    <ProjectReference Include="..\PioresFilmes.Data\PioresFilmes.Data.csproj" />
+    <ProjectReference Include="..\PioresFilmes.Domain\PioresFilmes.Domain.csproj" />
   </ItemGroup>
 
 </Project>

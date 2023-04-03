@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PioresFilmes.Domain;
 
 namespace PioresFilmes.Data
@@ -10,7 +11,8 @@ namespace PioresFilmes.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("DataSource=:memory:");
+            optionsBuilder.UseSqlite("DataSource=file::memory:?cache=shared")
+                .LogTo(Console.WriteLine, LogLevel.Information); // TODO - REMOVER
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
