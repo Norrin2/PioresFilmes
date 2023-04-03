@@ -7,5 +7,6 @@
         public IEnumerable<Producer> Producers { get; set; }
         public int Year { get; set; }
         public bool Winner { get; set; }
+        public string Studios { get; set; }
     }
 }
