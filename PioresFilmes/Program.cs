@@ -26,3 +26,5 @@ var initService = app.Services.CreateScope()
 await initService.Initialize();
 
 app.Run();
+
+public partial class Program { }

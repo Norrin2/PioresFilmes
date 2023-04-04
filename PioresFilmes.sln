@@ -5,11 +5,13 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PioresFilmes", "PioresFilmes\PioresFilmes.csproj", "{CCC26074-CB99-4098-8B10-C70EA74D27D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PioresFilmes.Data", "PioresFilmes.Data\PioresFilmes.Data.csproj", "{B0928EC5-ED06-4901-A4B0-04D4AD930EAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PioresFilmes.Data", "PioresFilmes.Data\PioresFilmes.Data.csproj", "{B0928EC5-ED06-4901-A4B0-04D4AD930EAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PioresFilmes.Domain", "PioresFilmes.Domain\PioresFilmes.Domain.csproj", "{AD8F4A29-0A46-47BE-883E-187E266CB80D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PioresFilmes.Domain", "PioresFilmes.Domain\PioresFilmes.Domain.csproj", "{AD8F4A29-0A46-47BE-883E-187E266CB80D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PioresFilmes.Application", "PioresFilmes.Application\PioresFilmes.Application.csproj", "{763D88BB-7C91-41D0-9635-325A19D1A3F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PioresFilmes.Application", "PioresFilmes.Application\PioresFilmes.Application.csproj", "{763D88BB-7C91-41D0-9635-325A19D1A3F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PioresFilmes.Test", "PioresFilmes.Test\PioresFilmes.Test.csproj", "{C253A8C4-8E90-46A5-BE21-5B7C017AC6C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{763D88BB-7C91-41D0-9635-325A19D1A3F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{763D88BB-7C91-41D0-9635-325A19D1A3F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{763D88BB-7C91-41D0-9635-325A19D1A3F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C253A8C4-8E90-46A5-BE21-5B7C017AC6C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C253A8C4-8E90-46A5-BE21-5B7C017AC6C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C253A8C4-8E90-46A5-BE21-5B7C017AC6C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C253A8C4-8E90-46A5-BE21-5B7C017AC6C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
