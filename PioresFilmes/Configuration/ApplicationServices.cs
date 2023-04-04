@@ -9,12 +9,12 @@ namespace PioresFilmes.Configuration
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IReadCsvService, ReadCsvService>();
-            services.AddScoped<IMovieRepository, MovieRepository>();
-            services.AddScoped<IProducerRepository, ProducerRepository>();
-            services.AddScoped<IFindProducersService, FindProducersService>();
-            services.AddScoped<IInitDatabaseService, InitDatabaseService>();
-            services.AddScoped<IInitializeDataService, InitializeDataService>();
+            services.AddSingleton<IReadCsvService, ReadCsvService>();
+            services.AddSingleton<IMovieRepository, MovieRepository>();
+            services.AddSingleton<IProducerRepository, ProducerRepository>();
+            services.AddSingleton<IFindProducersService, FindProducersService>();
+            services.AddSingleton<IInitDatabaseService, InitDatabaseService>();
+            services.AddSingleton<IInitializeDataService, InitializeDataService>();
 
             return services;
         }

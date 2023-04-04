@@ -19,9 +19,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
 });
 
-var initService = app.Services.CreateScope()
-                     .ServiceProvider
-                     .GetRequiredService<IInitializeDataService>();
+var initService = app.Services.GetRequiredService<IInitializeDataService>();                 
 
 await initService.Initialize();
 

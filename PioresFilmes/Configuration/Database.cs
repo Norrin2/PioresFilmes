@@ -9,7 +9,7 @@ namespace PioresFilmes.Configuration
         {
             var connection = new SqliteConnection("Data Source=:memory:;Cache=Shared");
             connection.Open();
-            services.AddScoped<IDbConnection>((x) => connection);
+            services.AddSingleton<IDbConnection>((x) => connection);
             return services;
         }
     }
