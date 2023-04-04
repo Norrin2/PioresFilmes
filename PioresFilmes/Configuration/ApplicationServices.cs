@@ -5,12 +5,13 @@ using PioresFilmes.Data.Interfaces;
 
 namespace PioresFilmes.Configuration
 {
-    public static class ApplicationServices
+    internal static class ApplicationServices
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IReadCsvService, ReadCsvService>();
             services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<IInitDatabaseService, InitDatabaseService>();
             services.AddScoped<IInitializeDataService, InitializeDataService>();
 
             return services;

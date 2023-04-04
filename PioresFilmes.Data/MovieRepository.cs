@@ -1,63 +1,34 @@
 ﻿using Dapper;
-using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 using PioresFilmes.Data.Interfaces;
 using PioresFilmes.Domain;
+using System.Data;
 
 namespace PioresFilmes.Data
 {
     public class MovieRepository: IMovieRepository
     {
-        private readonly SqliteConnection _dbConnection;
+        private readonly IDbConnection _dbConnection;
+        private readonly ILogger<MovieRepository> _logger;
 
-        public MovieRepository()
+        public MovieRepository(ILogger<MovieRepository> logger,
+                                IDbConnection dbConnection)
         {
-            _dbConnection = new SqliteConnection("Data Source=:memory:;Cache=Shared");
-
-            _dbConnection.Open();
-            using var transaction = _dbConnection.BeginTransaction();
-            try
-            {
-                _dbConnection.Execute(@"
-                    CREATE TABLE IF NOT EXISTS Movies (
-                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        Title TEXT NOT NULL,
-                        Year INTEGER NOT NULL,
-                        Studios TEXT NOT NULL,
-                        Winner BOOLEAN NOT NULL
-                    );
-                ");
-                _dbConnection.Execute(@"
-                    CREATE TABLE IF NOT EXISTS Producers (
-                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        Name TEXT NOT NULL
-                    );
-                ");
-                _dbConnection.Execute(@"
-                    CREATE TABLE IF NOT EXISTS MovieProducers (
-                        MovieId INTEGER NOT NULL,
-                        ProducerId INTEGER NOT NULL,
-                        PRIMARY KEY (MovieId, ProducerId),
-                        FOREIGN KEY (MovieId) REFERENCES Movies(Id),
-                        FOREIGN KEY (ProducerId) REFERENCES Producers(Id)
-                    );
-                ");
-                transaction.Commit();
-            }
-            catch (Exception)
-            {
-                transaction.Rollback();
-                throw;
-            }
+            _logger = logger;
+            _dbConnection = dbConnection;
 
         }
 
         public async Task CreateManyAsync(IEnumerable<Movie> movies)
         {
-            await _dbConnection.OpenAsync();
             using var transaction = _dbConnection.BeginTransaction();
 
             try
             {
+                var producers = movies.SelectMany(m => m.Producers)
+                                      .DistinctBy(p => p.Name);
+                await _dbConnection.ExecuteAsync("INSERT INTO Producers (Name) VALUES (@Name);", producers, transaction);
+
                 foreach (var movie in movies)
                 {
                     var movieId = await _dbConnection.ExecuteScalarAsync<long>("INSERT INTO Movies (Title, Year, Studios, Winner) VALUES (@Title, @Year, @Studios, @Winner); SELECT last_insert_rowid()", movie, transaction);
@@ -65,11 +36,6 @@ namespace PioresFilmes.Data
                     foreach (var producer in movie.Producers)
                     {
                         var existingProducerId = await _dbConnection.ExecuteScalarAsync<long>("SELECT Id FROM Producers WHERE Name = @Name", new { Name = producer.Name }, transaction);
-                        if (existingProducerId == 0)
-                        {
-                            existingProducerId = await _dbConnection.ExecuteScalarAsync<long>("INSERT INTO Producers (Name) VALUES (@Name);  SELECT last_insert_rowid()", producer, transaction);
-                        }
-
                         await _dbConnection.ExecuteAsync("INSERT INTO MovieProducers (MovieId, ProducerId) VALUES (@MovieId, @ProducerId)", new { MovieId = movieId, ProducerId = existingProducerId }, transaction);
                     }
                 }
@@ -81,31 +47,6 @@ namespace PioresFilmes.Data
                 transaction.Rollback();
                 throw;
             }
-        }
-
-        public async Task<Producer> FindProducerWithLeastInterval()
-        {
-            await _dbConnection.OpenAsync();
-            var result = _dbConnection.QueryFirstOrDefault<Producer>(@"
-            SELECT
-                p.Id,
-                p.Name
-            FROM
-                Producer p
-                INNER JOIN MovieProducer prev_mp ON prev_mp.ProducerId = p.Id
-                INNER JOIN Movie prev ON prev_mp.MovieId = prev.Id AND prev.Winner = 1
-                INNER JOIN MovieProducer curr_mp ON curr_mp.ProducerId = p.Id
-                INNER JOIN Movie curr ON curr_mp.MovieId = curr.Id AND curr.Winner = 1 AND curr.Year > prev.Year
-            GROUP BY
-                p.Id,
-                p.Name
-            HAVING
-                COUNT(*) > 1
-            ORDER BY
-                MIN(curr.Year - prev.Year)
-            LIMIT
-                1");
-                return result;
         }
     }
 }

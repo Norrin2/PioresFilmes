@@ -6,6 +6,7 @@ namespace PioresFilmes.Application.Services
 {
     public class InitializeDataService : IInitializeDataService
     {
+        public readonly IInitDatabaseService _initDatabaseService;
         public readonly IReadCsvService _readCsvService;
         public readonly IMovieRepository _movieRepository;
         private readonly ILogger<InitializeDataService> _logger;
@@ -13,10 +14,12 @@ namespace PioresFilmes.Application.Services
 
         public InitializeDataService(IReadCsvService readCsvService,
                                      IMovieRepository movieRepository,
+                                     IInitDatabaseService initDatabaseService,
                                      ILogger<InitializeDataService> logger)
         {
             _readCsvService = readCsvService;
             _movieRepository = movieRepository;
+            _initDatabaseService = initDatabaseService;
             _logger = logger;
         }
 
@@ -24,6 +27,7 @@ namespace PioresFilmes.Application.Services
         {
             try
             {
+                _initDatabaseService.InitDatabase();
                 var movies = _readCsvService.ReadMovies(CSV_FILENAME);
                 await _movieRepository.CreateManyAsync(movies);
             } catch (FileNotFoundException ex)
