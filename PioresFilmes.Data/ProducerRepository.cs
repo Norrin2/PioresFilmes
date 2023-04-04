@@ -1,6 +1,6 @@
 ﻿using Dapper;
+using PioresFilmes.Data.Dto;
 using PioresFilmes.Data.Interfaces;
-using PioresFilmes.Domain;
 using System.Data;
 
 namespace PioresFilmes.Data
@@ -14,15 +14,19 @@ namespace PioresFilmes.Data
             _dbConnection = dbConnection;
         }
 
-        public async Task<Producer> FindProducerWithLeastIntervalBetweenWins()
+        public async Task<IntervalDto> FindProducerWithLeastIntervalBetweenWins()
         {
-            var result = await _dbConnection.QueryFirstOrDefaultAsync<Producer>(@"
-                SELECT Producers.Name, Producers.Id, MIN(Current.WinningYear - Previous.WinningYear) as YearsBetweenWins
+            var result = await _dbConnection.QueryFirstOrDefaultAsync<IntervalDto>(@"
+                SELECT 
+                    Producers.Name, 
+                    MIN(Current.WinningYear) as PreviousWin, 
+                    MIN(Previous.WinningYear) as FollowingWin, 
+                    MIN(Current.WinningYear) - MIN(Previous.WinningYear) as YearDiff
                 FROM (
                     SELECT 
                         mp1.ProducerId, 
                         m1.Year as WinningYear, 
-                        ROW_NUMBER() OVER(PARTITION BY mp1.ProducerId ORDER BY m1.Year ASC) as WinNumber
+                        ROW_NUMBER() OVER(PARTITION BY mp1.ProducerId ORDER BY m1.Year DESC) as WinNumber
                     FROM MovieProducers mp1
                     INNER JOIN Movies m1 ON mp1.MovieId = m1.Id
                     WHERE m1.Winner = 1
@@ -31,7 +35,7 @@ namespace PioresFilmes.Data
                     SELECT 
                         mp2.ProducerId, 
                         m2.Year as WinningYear, 
-                        ROW_NUMBER() OVER(PARTITION BY mp2.ProducerId ORDER BY m2.Year ASC) as WinNumber
+                        ROW_NUMBER() OVER(PARTITION BY mp2.ProducerId ORDER BY m2.Year DESC) as WinNumber
                     FROM MovieProducers mp2
                     INNER JOIN Movies m2 ON mp2.MovieId = m2.Id
                     WHERE m2.Winner = 1
@@ -39,21 +43,25 @@ namespace PioresFilmes.Data
                 INNER JOIN Producers ON Producers.Id = Current.ProducerId
                 GROUP BY Producers.Name
                 HAVING COUNT(*) >= 1
-                ORDER BY YearsBetweenWins ASC
+                ORDER BY YearDiff DESC
                 LIMIT 1"
             );
             return result;
         }
 
-        public async Task<Producer> FindProducerWithGreatestIntervalBetweenWins()
+        public async Task<IntervalDto> FindProducerWithGreatestIntervalBetweenWins()
         {
-            var result = await _dbConnection.QueryFirstOrDefaultAsync<Producer>(@"
-                SELECT Producers.Name, Producers.Id, MIN(Current.WinningYear - Previous.WinningYear) as YearsBetweenWins
+            var result = await _dbConnection.QueryFirstOrDefaultAsync<IntervalDto>(@"
+                SELECT 
+                    Producers.Name, 
+                    MIN(Current.WinningYear) as PreviousWin, 
+                    MIN(Previous.WinningYear) as FollowingWin, 
+                    MIN(Current.WinningYear) - MIN(Previous.WinningYear) as YearDiff
                 FROM (
                     SELECT 
                         mp1.ProducerId, 
                         m1.Year as WinningYear, 
-                        ROW_NUMBER() OVER(PARTITION BY mp1.ProducerId ORDER BY m1.Year ASC) as WinNumber
+                        ROW_NUMBER() OVER(PARTITION BY mp1.ProducerId ORDER BY m1.Year DESC) as WinNumber
                     FROM MovieProducers mp1
                     INNER JOIN Movies m1 ON mp1.MovieId = m1.Id
                     WHERE m1.Winner = 1
@@ -62,7 +70,7 @@ namespace PioresFilmes.Data
                     SELECT 
                         mp2.ProducerId, 
                         m2.Year as WinningYear, 
-                        ROW_NUMBER() OVER(PARTITION BY mp2.ProducerId ORDER BY m2.Year ASC) as WinNumber
+                        ROW_NUMBER() OVER(PARTITION BY mp2.ProducerId ORDER BY m2.Year DESC) as WinNumber
                     FROM MovieProducers mp2
                     INNER JOIN Movies m2 ON mp2.MovieId = m2.Id
                     WHERE m2.Winner = 1
@@ -70,7 +78,7 @@ namespace PioresFilmes.Data
                 INNER JOIN Producers ON Producers.Id = Current.ProducerId
                 GROUP BY Producers.Name
                 HAVING COUNT(*) >= 1
-                ORDER BY YearsBetweenWins DESC
+                ORDER BY YearDiff ASC
                 LIMIT 1"
             );
             return result;

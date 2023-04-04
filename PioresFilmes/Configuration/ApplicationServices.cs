@@ -11,6 +11,8 @@ namespace PioresFilmes.Configuration
         {
             services.AddScoped<IReadCsvService, ReadCsvService>();
             services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<IProducerRepository, ProducerRepository>();
+            services.AddScoped<IFindProducersService, FindProducersService>();
             services.AddScoped<IInitDatabaseService, InitDatabaseService>();
             services.AddScoped<IInitializeDataService, InitializeDataService>();
 

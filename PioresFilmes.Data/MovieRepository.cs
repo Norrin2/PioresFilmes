@@ -9,14 +9,10 @@ namespace PioresFilmes.Data
     public class MovieRepository: IMovieRepository
     {
         private readonly IDbConnection _dbConnection;
-        private readonly ILogger<MovieRepository> _logger;
 
-        public MovieRepository(ILogger<MovieRepository> logger,
-                                IDbConnection dbConnection)
+        public MovieRepository(IDbConnection dbConnection)
         {
-            _logger = logger;
             _dbConnection = dbConnection;
-
         }
 
         public async Task CreateManyAsync(IEnumerable<Movie> movies)

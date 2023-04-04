@@ -6,9 +6,9 @@ namespace PioresFilmes.Application.Services
 {
     public class InitializeDataService : IInitializeDataService
     {
-        public readonly IInitDatabaseService _initDatabaseService;
-        public readonly IReadCsvService _readCsvService;
-        public readonly IMovieRepository _movieRepository;
+        private readonly IInitDatabaseService _initDatabaseService;
+        private readonly IReadCsvService _readCsvService;
+        private readonly IMovieRepository _movieRepository;
         private readonly ILogger<InitializeDataService> _logger;
         private static readonly string CSV_FILENAME = "movielist.csv";
 
