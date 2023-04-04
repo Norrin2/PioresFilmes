@@ -25,9 +25,7 @@ namespace PioresFilmes.Application.Services
             try
             {
                 var movies = _readCsvService.ReadMovies(CSV_FILENAME);
-
                 await _movieRepository.CreateManyAsync(movies);
-                await _movieRepository.CommitAsync();
             } catch (FileNotFoundException ex)
             {
                 _logger.LogError("Csv file was not found");
