@@ -16,11 +16,21 @@ namespace PioresFilmes.Application.Services
         public async Task<FindProducersDto> FindProducerIntervalsAsync()
         {
 
-            var min = _producerRepository.FindProducerWithLeastIntervalBetweenWins();
-            var max = _producerRepository.FindProducerWithGreatestIntervalBetweenWins();
+            var producersByWins = await _producerRepository.FindProducersByConsecutiveWins();
 
-            await Task.WhenAll(min, max);
-            return new FindProducersDto() { Max = max.Result, Min = min.Result };
+            var min = producersByWins.GroupBy(r => r.Interval)
+                                     .OrderBy(g => g.Key)
+                                     .First()
+                                     .ToList()
+                                     .OrderBy(producer => producer.Name);
+
+            var max = producersByWins.GroupBy(r => r.Interval)
+                                     .OrderByDescending(g => g.Key)
+                                     .First()
+                                     .ToList()
+                                     .OrderBy(producer => producer.Name);
+
+            return new FindProducersDto() { Max = max, Min = min };
         }
     }
 }

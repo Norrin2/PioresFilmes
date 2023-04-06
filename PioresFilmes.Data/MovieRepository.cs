@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Logging;
 using PioresFilmes.Data.Interfaces;
 using PioresFilmes.Domain;
 using System.Data;
